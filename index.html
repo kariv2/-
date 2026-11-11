@@ -16,24 +16,24 @@
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background-color: #04060a;
+      background-color: #06070a;
       font-family: 'Koulen', 'Kantumruy Pro', sans-serif;
     }
 
-    /* 1. CANVAS (Rain, Droplets, Window & Man Silhouette) */
+    /* 1. CINEMATIC CANVAS (Window, Brick Building, Man & Curtain) */
     #art-canvas {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
       z-index: 1;
-      background-color: #04060a;
+      background-color: #06070a;
     }
 
-    /* 2. CINEMATIC LETTERBOX & VINTAGE GRAIN */
+    /* 2. LETTERBOX & VINTAGE GRAIN */
     .letterbox {
       position: fixed;
       left: 0; width: 100vw;
-      height: 5vh;
+      height: 4.5vh;
       background: #000;
       z-index: 20;
       pointer-events: none;
@@ -44,7 +44,7 @@
     #film-grain {
       position: fixed;
       inset: 0;
-      opacity: 0.15;
+      opacity: 0.14;
       pointer-events: none;
       z-index: 15;
       background-image: repeating-radial-gradient(circle, #fff 0, transparent 1px, transparent 4px);
@@ -52,9 +52,9 @@
       animation: flicker 0.15s infinite;
     }
     @keyframes flicker {
-      0% { opacity: 0.13; }
-      50% { opacity: 0.18; }
-      100% { opacity: 0.14; }
+      0% { opacity: 0.12; }
+      50% { opacity: 0.16; }
+      100% { opacity: 0.13; }
     }
 
     /* ==========================================================
@@ -63,8 +63,7 @@
     #lyric-container {
       position: fixed;
       left: 0; right: 0;
-      /* Anchored below the window in the dark room area where there is NO rain */
-      bottom: 7.5vh;
+      bottom: 6.5vh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -76,17 +75,16 @@
 
     .lyric-box {
       text-align: center;
-      min-height: 70px;
+      min-height: 65px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
     }
 
-    /* MUTED, MELANCHOLIC VINTAGE COLOR (Less bright, quiet & sad) */
     .word-token {
       display: inline-block;
-      color: #cfc8b8 !important; /* Muted vintage ash-cream */
+      color: #cfc8b8 !important; /* Muted ash-cream */
       font-family: 'Koulen', 'Kantumruy Pro', cursive, sans-serif;
       font-size: clamp(23px, 3.4vw, 38px);
       font-weight: 600;
@@ -94,7 +92,6 @@
       letter-spacing: 0.02em;
       margin: 0 5px;
       opacity: 0.92;
-      /* Soft sad shadow - no blinding neon glare */
       text-shadow: 
         0 2px 8px rgba(0, 0, 0, 0.95),
         0 0 14px rgba(185, 175, 155, 0.28);
@@ -125,8 +122,8 @@
     }
     @keyframes floatUp {
       0% { opacity: 0; transform: translateY(0); }
-      20% { opacity: 0.9; }
-      100% { opacity: 0; transform: translateY(-360px); }
+      20% { opacity: 0.85; }
+      100% { opacity: 0; transform: translateY(-340px); }
     }
 
     /* ==========================================================
@@ -184,7 +181,6 @@
 </head>
 <body>
 
-  <!-- Media Player with your video file -->
   <video id="song-player" playsinline webkit-playsinline loop preload="auto">
     <source src="snaptik_7635591509277986068_v3.mp4" type="video/mp4">
   </video>
@@ -192,11 +188,11 @@
   <div class="letterbox lb-top"></div>
   <div class="letterbox lb-bottom"></div>
 
-  <!-- Canvas Scene: Man Sitting in Window During Rain -->
+  <!-- Scene Canvas matching reference photo -->
   <canvas id="art-canvas"></canvas>
   <div id="film-grain"></div>
 
-  <!-- Bottom Lyrics Stage (Positioned below the window where there's NO rain) -->
+  <!-- Bottom Khmer Lyrics -->
   <div id="lyric-container">
     <div class="lyric-box" id="lyric-box"></div>
   </div>
@@ -209,56 +205,30 @@
 
   <script>
     // ==============================================================
-    // 1. SCENE ENGINE: MAN SITTING AT THE RAINY WINDOW
+    // 1. SCENE ENGINE: COMPOSITION MATCHING YOUR PHOTO
     // ==============================================================
     const canvas = document.getElementById('art-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
 
     let rain = [];
-    let bokehs = [];
-    let glassDrops = [];
-    let steamTick = 0;
 
     function resize() {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
-      initScene();
+      initRain();
     }
 
-    function initScene() {
+    function initRain() {
       rain = [];
-      for (let i = 0; i < Math.floor(width * 0.3); i++) {
+      const rainCount = Math.floor(width * 0.28);
+      for (let i = 0; i < rainCount; i++) {
         rain.push({
-          x: Math.random() * width,
+          x: Math.random() * (width * 0.48), // Rain falls only outside the window (left half)
           y: Math.random() * height,
-          l: Math.random() * 24 + 14,
-          s: Math.random() * 12 + 14,
+          l: Math.random() * 22 + 12,
+          s: Math.random() * 11 + 13,
           a: Math.random() * 0.35 + 0.15
-        });
-      }
-
-      bokehs = [];
-      const colors = ['rgba(255,209,102,', 'rgba(255,82,82,', 'rgba(144,205,244,'];
-      for (let i = 0; i < 16; i++) {
-        bokehs.push({
-          x: Math.random() * width,
-          y: height * 0.25 + Math.random() * (height * 0.45),
-          r: Math.random() * 45 + 20,
-          c: colors[Math.floor(Math.random() * colors.length)],
-          a: Math.random() * 0.25 + 0.08,
-          dx: (Math.random() - 0.5) * 0.3,
-          p: Math.random() * Math.PI
-        });
-      }
-
-      glassDrops = [];
-      for (let i = 0; i < 35; i++) {
-        glassDrops.push({
-          x: width * 0.15 + Math.random() * (width * 0.7),
-          y: Math.random() * (height * 0.7),
-          r: Math.random() * 2.5 + 1.2,
-          s: Math.random() * 0.7 + 0.15
         });
       }
     }
@@ -266,141 +236,148 @@
     function drawScene() {
       ctx.clearRect(0, 0, width, height);
 
-      // Outside Bokeh Lights
-      bokehs.forEach(b => {
-        b.x += b.dx;
-        b.p += 0.02;
-        const alpha = b.a + Math.sin(b.p) * 0.05;
-        const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
-        grad.addColorStop(0, b.c + alpha + ')');
-        grad.addColorStop(1, b.c + '0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
+      const winWidth = width * 0.44;  // Window occupies left ~44%
+      const curtainLeft = width * 0.48; // Curtain occupies right half
 
-      // Outside Rain
-      ctx.lineWidth = 1.2;
+      // --- 1. OUTSIDE RAINY DAY VIEW (RED BRICK BUILDING) ---
+      // Overcast rainy sky gradient
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, height);
+      skyGrad.addColorStop(0, '#545d68');
+      skyGrad.addColorStop(1, '#3b434d');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, winWidth, height);
+
+      // Red Brick Wall Outside (matching reference photo)
+      const brickL = width * 0.01;
+      const brickR = width * 0.28;
+      ctx.fillStyle = '#6e382b'; // Moody red brick
+      ctx.fillRect(brickL, 0, brickR - brickL, height);
+
+      // Brick rows & texture
+      ctx.strokeStyle = '#52291f';
+      ctx.lineWidth = 1;
+      for (let y = 0; y < height; y += 14) {
+        ctx.beginPath();
+        ctx.moveTo(brickL, y);
+        ctx.lineTo(brickR, y);
+        ctx.stroke();
+      }
+
+      // Arched brick windows outside in background
+      ctx.fillStyle = '#1c2128';
+      ctx.fillRect(brickL + 20, height * 0.15, 60, 90);
+      ctx.fillRect(brickL + 20, height * 0.52, 60, 90);
+      // Window panes outside
+      ctx.fillStyle = '#3a4452';
+      ctx.fillRect(brickL + 26, height * 0.18, 48, 40);
+      ctx.fillRect(brickL + 26, height * 0.55, 48, 40);
+
+      // Slanted Rain falling outside the window
+      ctx.lineWidth = 1.1;
       rain.forEach(r => {
-        ctx.strokeStyle = `rgba(160,205,255,${r.a})`;
+        ctx.strokeStyle = `rgba(180, 215, 255, ${r.a})`;
         ctx.beginPath();
         ctx.moveTo(r.x, r.y);
         ctx.lineTo(r.x + 2, r.y + r.l);
         ctx.stroke();
         r.y += r.s;
-        r.x += 1;
-        if (r.y > height) { r.y = -r.l; r.x = Math.random() * width; }
-      });
-
-      // Trickling Window Droplets
-      glassDrops.forEach(d => {
-        ctx.fillStyle = 'rgba(210,235,255,0.7)';
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-        ctx.fill();
-        d.y += d.s;
-        if (d.y > height * 0.72) {
-          d.y = height * 0.08;
-          d.x = width * 0.15 + Math.random() * (width * 0.7);
+        r.x += 0.8;
+        if (r.y > height) {
+          r.y = -r.l;
+          r.x = Math.random() * winWidth;
         }
       });
 
-      // Room Interior Walls & Window Frame
-      const winL = width * 0.15;
-      const winR = width * 0.85;
-      const winTop = height * 0.08;
-      const winBottom = height * 0.72;
+      // --- 2. TALL WHITE WINDOW FRAME (Matching photo structure) ---
+      ctx.fillStyle = '#cfc7b8'; // Off-white painted wood frame
+      ctx.fillRect(winWidth - 28, 0, 28, height); // Main vertical frame
+      // Frosted / glass dividers
+      ctx.fillStyle = '#9aa1ab';
+      ctx.fillRect(winWidth - 110, height * 0.12, 80, height * 0.38);
+      ctx.strokeStyle = '#cfc7b8';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(winWidth - 110, height * 0.12, 80, height * 0.38);
 
-      ctx.fillStyle = '#04060a';
-      ctx.fillRect(0, 0, winL, height);
-      ctx.fillRect(winR, 0, width - winR, height);
-      ctx.fillRect(0, 0, width, winTop);
-      ctx.fillRect(0, winBottom, width, height - winBottom); // Dark lower area where lyrics run!
-
-      // Wooden Sill
-      ctx.fillStyle = '#111824';
-      ctx.fillRect(winL - 20, winBottom - 8, (winR - winL) + 40, 24);
-
-      // Crossbars
-      ctx.fillStyle = '#060a12';
-      const midX = (winL + winR) / 2;
-      ctx.fillRect(midX - 5, winTop, 10, winBottom - winTop);
-      ctx.fillRect(winL, (winTop + winBottom) / 2 - 4, winR - winL, 8);
-
-      // Silhouette of Man Sitting on Window Sill
-      const manX = winR - (width > 800 ? 150 : 90);
-      const manY = winBottom + 6;
-      const scale = width > 800 ? 1.0 : 0.7;
+      // --- 3. THE MAN SITTING ON THE WINDOW SILL (Profile facing left) ---
+      const manX = winWidth - 10;
+      const manY = height * 0.68;
+      const scale = width > 800 ? 1.05 : 0.78;
 
       ctx.save();
       ctx.translate(manX, manY);
       ctx.scale(scale, scale);
 
-      ctx.strokeStyle = 'rgba(255,183,77,0.35)';
-      ctx.lineWidth = 2;
+      // Soft overcast window light reflecting on his face profile
+      ctx.strokeStyle = 'rgba(215, 225, 240, 0.45)';
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.moveTo(35, 0);
-      ctx.bezierCurveTo(45, -70, 40, -120, 20, -165);
+      ctx.moveTo(-45, -170); // Hair tip
+      ctx.lineTo(-58, -148); // Forehead
+      ctx.lineTo(-64, -135); // Nose tip
+      ctx.lineTo(-58, -128); // Lips
+      ctx.lineTo(-56, -118); // Chin
+      ctx.lineTo(-40, -100); // Jawline
       ctx.stroke();
 
-      ctx.fillStyle = '#020306';
+      // Head silhouette
+      ctx.fillStyle = '#080a0e';
       ctx.beginPath();
-      ctx.moveTo(-110, 0);
-      ctx.bezierCurveTo(-100, -75, -60, -95, 0, -90);
-      ctx.bezierCurveTo(30, -90, 45, -50, 45, 0);
+      ctx.moveTo(-45, -170);
+      ctx.bezierCurveTo(-30, -195, 10, -190, 25, -165);
+      ctx.bezierCurveTo(35, -140, 30, -110, 15, -95);
+      ctx.lineTo(-30, -95);
+      ctx.bezierCurveTo(-50, -100, -65, -130, -45, -170);
+      ctx.fill();
+
+      // Shaggy dark wavy hair (matching photo)
+      ctx.fillStyle = '#050608';
+      ctx.beginPath();
+      ctx.moveTo(-60, -155);
+      ctx.bezierCurveTo(-70, -145, -60, -130, -50, -125); // Fringe over temple
+      ctx.bezierCurveTo(-35, -115, -25, -130, -25, -145);
+      ctx.bezierCurveTo(-20, -175, 5, -185, -20, -195);
+      ctx.bezierCurveTo(-45, -200, -65, -175, -60, -155);
+      ctx.fill();
+
+      // Body / Black long-sleeve sweater (folded sideways on the sill)
+      ctx.fillStyle = '#0a0d12';
+      ctx.beginPath();
+      ctx.moveTo(15, -95);
+      ctx.bezierCurveTo(45, -60, 50, 0, 50, 80); // Back
+      ctx.lineTo(-120, 80); // Lap
+      ctx.bezierCurveTo(-115, 20, -75, -20, -35, -70); // Arm & chest
       ctx.closePath();
       ctx.fill();
 
+      // Clasped hands resting on lap (matching photo)
+      ctx.fillStyle = '#1e2430';
       ctx.beginPath();
-      ctx.moveTo(10, 0);
-      ctx.bezierCurveTo(40, -90, 30, -150, -5, -170);
-      ctx.bezierCurveTo(-35, -150, -35, -80, -20, 0);
-      ctx.closePath();
+      ctx.ellipse(-85, 38, 16, 10, -0.2, 0, Math.PI * 2);
       ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(-15, -110);
-      ctx.bezierCurveTo(-50, -85, -75, -50, -85, -10);
-      ctx.lineTo(-65, -10);
-      ctx.bezierCurveTo(-55, -45, -30, -80, -5, -100);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(-85, -10);
-      ctx.bezierCurveTo(-80, -50, -60, -110, -35, -145);
-      ctx.lineTo(-25, -140);
-      ctx.bezierCurveTo(-45, -100, -65, -50, -65, -10);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(-22, -168, 22, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(-22, -190);
-      ctx.bezierCurveTo(-45, -188, -48, -160, -40, -145);
-      ctx.bezierCurveTo(-35, -155, -20, -160, -10, -150);
-      ctx.bezierCurveTo(0, -170, -5, -192, -22, -190);
-      ctx.fill();
-
-      // Mug & steam
-      ctx.fillStyle = '#1c283c';
-      ctx.fillRect(-120, -22, 20, 20);
-      ctx.strokeStyle = '#4a6288';
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(-120, -22, 20, 20);
-
-      steamTick += 0.04;
-      ctx.strokeStyle = 'rgba(255,230,180,0.4)';
-      ctx.beginPath();
-      ctx.moveTo(-110, -24);
-      ctx.quadraticCurveTo(-110 + Math.sin(steamTick) * 6, -36, -110, -48);
-      ctx.stroke();
 
       ctx.restore();
+
+      // --- 4. HEAVY GOLDEN-MUSTARD CURTAIN (Right side of room) ---
+      // Dark room base shadow
+      ctx.fillStyle = '#06070a';
+      ctx.fillRect(curtainLeft - 20, 0, width - curtainLeft + 20, height);
+
+      // Rich draped curtain folds (olive/mustard tones from photo)
+      const curtainFolds = [
+        { x: curtainLeft, w: width * 0.10, col1: '#4a401c', col2: '#1f1a0a' },
+        { x: curtainLeft + width * 0.08, w: width * 0.12, col1: '#5c4e20', col2: '#181406' },
+        { x: curtainLeft + width * 0.18, w: width * 0.14, col1: '#423714', col2: '#0e0b03' },
+        { x: curtainLeft + width * 0.30, w: width * 0.25, col1: '#2e260c', col2: '#050401' }
+      ];
+
+      curtainFolds.forEach(f => {
+        const foldGrad = ctx.createLinearGradient(f.x, 0, f.x + f.w, 0);
+        foldGrad.addColorStop(0, f.col2);
+        foldGrad.addColorStop(0.35, f.col1);
+        foldGrad.addColorStop(1, f.col2);
+        ctx.fillStyle = foldGrad;
+        ctx.fillRect(f.x, 0, f.w, height);
+      });
 
       requestAnimationFrame(drawScene);
     }
@@ -410,7 +387,7 @@
     drawScene();
 
     // ==============================================================
-    // 2. REAL-TIME WORD-BY-WORD KHMER TIMELINE
+    // 2. TIMED KHMER LYRICS (WORD-BY-WORD ONLY IN KHMER)
     // ==============================================================
     const PHRASES = [
       { id: 1, start: 0.1, end: 3.6, words: [
