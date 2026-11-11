@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>បើមេឃឈប់ភ្លៀង</title>
+  <!-- Google Fonts for Khmer Script -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@500;600;700&family=Koulen&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@600;700&family=Koulen&display=swap" rel="stylesheet">
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -57,55 +58,60 @@
     }
 
     /* ==========================================================
-       3. PURE KHMER GLOWING WORD-BY-WORD LYRICS
+       3. CENTERED GLOWING GOLDEN KHMER WORD-BY-WORD LYRICS
        ========================================================== */
     #lyric-container {
       position: fixed;
-      left: 0; right: 0;
-      bottom: 10vh;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(92vw, 850px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 50;
+      z-index: 100;
       pointer-events: none;
-      padding: 0 24px;
+      padding: 0 20px;
     }
 
     .lyric-box {
       text-align: center;
-      max-width: min(92vw, 850px);
-      min-height: 85px;
+      min-height: 90px;
     }
 
+    /* SOLID RADIANT GOLDEN COLOR (Never turns transparent in Safari) */
     .lyric-text {
+      color: #ffda79 !important;
       font-family: 'Koulen', 'Kantumruy Pro', cursive, sans-serif;
-      font-size: clamp(26px, 4vw, 46px);
+      font-size: clamp(28px, 4.4vw, 50px);
       font-weight: 700;
       line-height: 1.45;
-      letter-spacing: 0.025em;
-
-      /* Amber-Gold Metallic Gradient */
-      background: linear-gradient(180deg, #fffbe6 0%, #ffd166 45%, #f78c6c 80%, #d46517 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-
-      /* Warm Golden Halo Glow */
-      filter: drop-shadow(0 0 16px rgba(255, 209, 102, 0.95))
-              drop-shadow(0 0 35px rgba(247, 140, 108, 0.6))
-              drop-shadow(0 4px 12px rgba(0, 0, 0, 0.95));
+      letter-spacing: 0.03em;
+      text-align: center;
+      /* Intense Warm Golden Neon Halo Glow */
+      text-shadow: 
+        0 0 14px rgba(255, 218, 121, 0.95),
+        0 0 32px rgba(255, 159, 67, 0.75),
+        0 0 50px rgba(247, 140, 108, 0.5),
+        0 3px 8px rgba(0, 0, 0, 0.95);
     }
 
-    /* Word-by-Word Pop Animation */
+    /* Word-by-Word Reveal */
     .word-token {
       display: inline-block;
-      opacity: 0;
-      transform: translateY(7px) scale(0.92);
-      animation: wordPop 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.25) forwards;
+      opacity: 1;
       margin: 0 4px;
+      animation: wordPop 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.25) both;
     }
     @keyframes wordPop {
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: translateY(8px) scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .amber-ember {
@@ -124,7 +130,7 @@
     }
 
     /* ==========================================================
-       4. START OVERLAY (IPAD COMPLIANT)
+       4. START OVERLAY
        ========================================================== */
     #start-screen {
       position: fixed !important;
@@ -190,7 +196,7 @@
   <canvas id="art-canvas"></canvas>
   <div id="film-grain"></div>
 
-  <!-- Pure Khmer Lyrics Stage -->
+  <!-- Golden Center Lyrics Stage -->
   <div id="lyric-container">
     <div class="lyric-box" id="lyric-box"></div>
   </div>
@@ -410,7 +416,7 @@
     drawScene();
 
     // ==============================================================
-    // 2. EXACT TIMED KHMER LYRICS (WORD-BY-WORD ONLY IN KHMER)
+    // 2. TIMED KHMER LYRICS (WORD-BY-WORD ONLY IN KHMER)
     // ==============================================================
     const TIMED_LYRICS = [
       { time: 0.6,  words: ["អាចទេ", "បើ", "ខ្ញុំ", "ឈប់", "យំ"], duration: 2.4 },
@@ -455,21 +461,18 @@
     });
 
     function playWordTimeline() {
-      const box = document.getElementById('lyric-box');
-
       TIMED_LYRICS.forEach(item => {
         setTimeout(() => {
           renderWordByWord(item.words, item.duration);
         }, item.time * 1000);
       });
 
-      // Seamless loop every 39.5s
       loopTimeout = setTimeout(() => {
         restartTimeline();
       }, 39500);
     }
 
-    // Pure Khmer Word-by-Word Engine (No English)
+    // PURE KHMER WORD-BY-WORD ENGINE
     function renderWordByWord(wordsArray, vocalDuration) {
       const box = document.getElementById('lyric-box');
       box.innerHTML = '';
