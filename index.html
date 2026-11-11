@@ -7,7 +7,7 @@
   <!-- Google Fonts for Vintage Khmer Script -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,600;0,700;1,400&family=Koulen&family=Moul&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,600;0,700;1,400&family=Koulen&display=swap" rel="stylesheet">
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -22,7 +22,7 @@
       -webkit-user-select: none;
     }
 
-    /* 1. HTML5 CANVAS: RAIN, WET STREET & CAR LIGHTS BOKEH */
+    /* 1. RAIN CANVAS & WET STREET BOKEH */
     #rain-canvas {
       position: fixed;
       top: 0; left: 0;
@@ -31,11 +31,11 @@
       background: radial-gradient(circle at 50% 60%, #101522 0%, #05070a 100%);
     }
 
-    /* 2. VINTAGE 35MM FILM GRAIN & FLICKER */
+    /* 2. 35MM VINTAGE FILM GRAIN & VIGNETTE */
     #film-overlay {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 50% 50%, rgba(20, 15, 10, 0.15) 0%, rgba(0, 0, 0, 0.75) 100%);
+      background: radial-gradient(circle at 50% 50%, rgba(20, 15, 10, 0.15) 0%, rgba(0, 0, 0, 0.78) 100%);
       pointer-events: none;
       z-index: 10;
     }
@@ -57,7 +57,7 @@
       100% { transform: translate(-1px, 1px); opacity: 0.18; }
     }
 
-    /* 3. CINEMATIC WIDESCREEN LETTERBOX BARS */
+    /* 3. CINEMATIC LETTERBOX BARS */
     .letterbox-bar {
       position: fixed;
       left: 0; width: 100vw;
@@ -94,12 +94,11 @@
       line-height: 1.45;
       letter-spacing: 0.03em;
       
-      /* Rich Amber / Vintage Gold Metallic Gradient */
+      /* Amber Gold Metallic Gradient */
       background: linear-gradient(180deg, #fff9d6 0%, #f6d365 45%, #fda085 75%, #cf711f 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
 
-      /* Warm Golden Vintage Neon Halo */
       filter: drop-shadow(0 0 16px rgba(246, 211, 101, 0.75))
               drop-shadow(0 0 35px rgba(253, 160, 133, 0.45))
               drop-shadow(0 4px 10px rgba(0, 0, 0, 0.95));
@@ -108,7 +107,7 @@
       will-change: transform, opacity, filter;
     }
 
-    /* Slow Cinematic Zoom & Dissolve (Ken Burns Effect) */
+    /* Slow Cinematic Zoom & Dissolve */
     .vintage-lyric.active {
       animation: cinematicZoom 4.2s cubic-bezier(0.15, 0.85, 0.35, 1) forwards;
     }
@@ -117,7 +116,7 @@
       0% {
         opacity: 0;
         transform: scale(0.92) translateY(10px);
-        filter: blur(8px) drop-shadow(0 0 5px rgba(246, 211, 101, 0.3));
+        filter: blur(8px);
       }
       18% {
         opacity: 1;
@@ -135,7 +134,6 @@
       }
     }
 
-    /* Secondary Echo/Subline */
     .lyric-sub {
       display: block;
       font-family: 'Kantumruy Pro', sans-serif;
@@ -148,7 +146,7 @@
       text-shadow: 0 0 12px rgba(246, 211, 101, 0.5);
     }
 
-    /* Floating Golden Amber Dust Specks */
+    /* Ambient Floating Amber Sparks */
     .amber-dust {
       position: fixed;
       border-radius: 50%;
@@ -166,7 +164,7 @@
       100% { opacity: 0; transform: translateY(-380px) scale(1.3); }
     }
 
-    /* Start Screen */
+    /* 5. START OVERLAY (REQUIRED FOR SAFARI SOUND ACCESS) */
     #start-screen {
       position: fixed;
       inset: 0;
@@ -181,10 +179,20 @@
       z-index: 200;
     }
 
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+      width: 100%;
+      max-width: 330px;
+    }
+
     #start-btn {
-      padding: 18px 48px;
+      width: 100%;
+      padding: 18px 24px;
       font-family: 'Koulen', sans-serif;
-      font-size: 22px;
+      font-size: 21px;
       letter-spacing: 0.05em;
       background: linear-gradient(135deg, #f6d365, #fda085);
       color: #1a1005;
@@ -196,10 +204,30 @@
     }
     #start-btn:active { transform: scale(0.96); }
 
+    .audio-upload-container {
+      position: relative;
+      width: 100%;
+      padding: 12px 20px;
+      font-family: 'Kantumruy Pro', sans-serif;
+      font-size: 13.5px;
+      color: #dfc299;
+      background: rgba(30, 24, 18, 0.6);
+      border: 1px dashed rgba(246, 211, 101, 0.5);
+      border-radius: 25px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .audio-upload-container input[type="file"] {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
     .subtitle {
       margin-top: 14px;
       opacity: 0.65;
-      font-size: 14px;
+      font-size: 13.5px;
       font-family: 'Kantumruy Pro', sans-serif;
     }
 
@@ -214,8 +242,12 @@
 </head>
 <body>
 
-  <!-- Hidden Video Audio Player -->
-  <video id="song-player" playsinline webkit-playsinline preload="auto">
+  <!-- ============================================================== -->
+  <!-- LOOPING MEDIA PLAYER (Accepts MP4 video or MP3 audio)          -->
+  <!-- ============================================================== -->
+  <video id="song-player" playsinline webkit-playsinline loop preload="auto">
+    <source src="music.mp4" type="video/mp4">
+    <source src="music.mp3" type="audio/mp3">
     <source src="f12117c668798929d30d9a1344321ba7.mp4" type="video/mp4">
   </video>
 
@@ -223,10 +255,10 @@
   <div class="letterbox-bar letterbox-top"></div>
   <div class="letterbox-bar letterbox-bottom"></div>
 
-  <!-- Rain & Wet Bokeh Canvas -->
+  <!-- Rain Canvas -->
   <canvas id="rain-canvas"></canvas>
 
-  <!-- 35mm Vintage Film Grain -->
+  <!-- Vintage Film Grain -->
   <div id="film-overlay"></div>
   <div id="film-grain"></div>
 
@@ -235,13 +267,21 @@
 
   <!-- Start Screen -->
   <div id="start-screen">
-    <button id="start-btn" onclick="startCinema()">▶ ចាក់ចម្រៀង & គំនូរជីវចល</button>
-    <p class="subtitle">បើកសំឡេងឡើងដើម្បីស្តាប់បទ "បើមេឃឈប់ភ្លៀង"</p>
+    <div class="btn-group">
+      <button id="start-btn" onclick="startCinema()">▶ ចាក់ចម្រៀង & គំនូរជីវចល</button>
+      
+      <!-- Optional: Select video directly from your iPad Photos or Files -->
+      <div class="audio-upload-container">
+        <span id="audio-label">📁 ជ្រើសរើសវីដេអូ/ចម្រៀង</span>
+        <input type="file" id="media-input" accept="video/*,audio/*" onchange="handleMediaUpload(this)">
+      </div>
+    </div>
+    <p class="subtitle" id="status-text">(បទចម្រៀងនឹងចាក់បន្តបន្ទាប់ Loop ដោយមិនឈប់)</p>
   </div>
 
   <script>
     // ==============================================================
-    // 1. CANVAS: REALISTIC RAIN, WET STREET & CAR BOKEH LIGHTS
+    // 1. CANVAS: RAIN & WET STREET CAR BOKEH LIGHTS
     // ==============================================================
     const canvas = document.getElementById('rain-canvas');
     const ctx = canvas.getContext('2d');
@@ -270,14 +310,13 @@
       }
     }
 
-    // Wet Street Headlights & Red Taillight Bokeh Lights
     function initBokeh() {
       bokehs = [];
       const colors = [
-        'rgba(246, 211, 101, ',  // Warm Streetlight Amber
-        'rgba(255, 75, 75, ',    // Red Car Taillight
-        'rgba(144, 205, 244, ',  // Cold Wet Headlight Blue
-        'rgba(255, 255, 255, '   // Bright Xenon
+        'rgba(246, 211, 101, ',  // Streetlight Amber
+        'rgba(255, 75, 75, ',    // Car Taillight Red
+        'rgba(144, 205, 244, ',  // Wet Headlight Blue
+        'rgba(255, 255, 255, '   // Xenon White
       ];
       for (let i = 0; i < 18; i++) {
         bokehs.push({
@@ -295,7 +334,6 @@
     function renderCanvas() {
       ctx.clearRect(0, 0, width, height);
 
-      // Draw Soft Glowing Bokeh Lights
       bokehs.forEach(b => {
         b.x += b.driftX;
         b.pulse += 0.02;
@@ -310,12 +348,10 @@
         ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
         ctx.fill();
 
-        // Wrap around
         if (b.x < -b.radius) b.x = width + b.radius;
         if (b.x > width + b.radius) b.x = -b.radius;
       });
 
-      // Draw Slanted Falling Rain Streaks
       ctx.lineWidth = 1.2;
       raindrops.forEach(r => {
         ctx.strokeStyle = `rgba(180, 215, 255, ${r.opacity})`;
@@ -340,7 +376,7 @@
     renderCanvas();
 
     // ==============================================================
-    // 2. KHMER LYRICS TIMED TO THE VIDEO ("បើមេឃឈប់ភ្លៀង")
+    // 2. KHMER LYRICS TIMELINE ("បើមេឃឈប់ភ្លៀង")
     // ==============================================================
     const TIMED_LYRICS = [
       { time: 0.2,  text: "តើអាចទេ បើខ្ញុំឈប់យំ", sub: "can i stop crying?" },
@@ -356,6 +392,19 @@
     ];
 
     let hasStarted = false;
+    let loopTimeout = null;
+
+    // Handles picking video/audio from iPad
+    function handleMediaUpload(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const player = document.getElementById('song-player');
+        player.src = URL.createObjectURL(file);
+        player.load();
+        document.getElementById('audio-label').innerText = "✓ វីដេអូបានជ្រើសរើស!";
+        document.getElementById('status-text').innerText = "រួចរាល់! ចុច 'ចាក់ចម្រៀង' ដើម្បីស្តាប់។";
+      }
+    }
 
     function startCinema() {
       if (hasStarted) return;
@@ -363,19 +412,25 @@
 
       document.getElementById('start-screen').style.display = 'none';
 
-      // Play audio from your video
       const player = document.getElementById('song-player');
       player.muted = false;
+      player.loop = true; // NON-STOP LOOPING ON AUDIO/VIDEO
       player.play().catch(e => console.log("Audio waiting on gesture:", e));
 
-      // Spawn amber floating sparks
+      // Event listener: guarantees audio and typography restart together seamlessly
+      player.onended = () => {
+        player.currentTime = 0;
+        player.play();
+        restartCinemaTimeline();
+      };
+
       setInterval(spawnAmberDust, 260);
 
-      // Trigger Cinema Lyrics
-      playCinemaLoop();
+      // Start Cinema Timeline
+      playCinemaTimeline();
     }
 
-    function playCinemaLoop() {
+    function playCinemaTimeline() {
       const stage = document.getElementById('lyric-stage');
 
       TIMED_LYRICS.forEach(item => {
@@ -392,17 +447,25 @@
         }, item.time * 1000);
       });
 
-      // Loop sequence
-      setTimeout(() => {
-        stage.innerHTML = '';
-        const player = document.getElementById('song-player');
-        player.currentTime = 0;
-        player.play().catch(() => {});
-        playCinemaLoop();
-      }, 41000);
+      // NON-STOP LOOP: Resets the lyrics sequence every 40.5s
+      loopTimeout = setTimeout(() => {
+        restartCinemaTimeline();
+      }, 40500);
     }
 
-    // Floating Amber Firefly / Sparks
+    function restartCinemaTimeline() {
+      clearTimeout(loopTimeout);
+      const stage = document.getElementById('lyric-stage');
+      stage.innerHTML = '';
+      
+      const player = document.getElementById('song-player');
+      // If loop was slightly desynced, align back to 0
+      if (player.currentTime >= 39) {
+        player.currentTime = 0;
+      }
+      playCinemaTimeline();
+    }
+
     function spawnAmberDust() {
       const dust = document.createElement('div');
       dust.className = 'amber-dust';
@@ -421,4 +484,4 @@
     }
   </script>
 </body>
-  </html>
+</html>
