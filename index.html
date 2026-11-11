@@ -7,7 +7,7 @@
   <!-- Google Fonts for Khmer Script -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@600;700&family=Koulen&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@500;600;700&family=Koulen&display=swap" rel="stylesheet">
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -58,57 +58,59 @@
     }
 
     /* ==========================================================
-       3. CENTERED PURE KHMER WORD-BY-WORD LYRICS
+       3. BOTTOM PURE KHMER LYRICS (SAD & SUBDUED)
        ========================================================== */
     #lyric-container {
       position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: min(94vw, 900px);
+      left: 0; right: 0;
+      /* Anchored below the window in the dark room area where there is NO rain */
+      bottom: 7.5vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 100;
       pointer-events: none;
-      padding: 0 16px;
+      padding: 0 20px;
     }
 
     .lyric-box {
       text-align: center;
-      min-height: 85px;
+      min-height: 70px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
     }
 
-    /* Word Pop-in with Glowing Gold Bloom */
+    /* MUTED, MELANCHOLIC VINTAGE COLOR (Less bright, quiet & sad) */
     .word-token {
       display: inline-block;
-      color: #ffda79 !important;
+      color: #cfc8b8 !important; /* Muted vintage ash-cream */
       font-family: 'Koulen', 'Kantumruy Pro', cursive, sans-serif;
-      font-size: clamp(28px, 4.4vw, 52px);
-      font-weight: 700;
+      font-size: clamp(23px, 3.4vw, 38px);
+      font-weight: 600;
       line-height: 1.45;
-      letter-spacing: 0.03em;
-      margin: 0 6px;
+      letter-spacing: 0.02em;
+      margin: 0 5px;
+      opacity: 0.92;
+      /* Soft sad shadow - no blinding neon glare */
       text-shadow: 
-        0 0 14px rgba(255, 218, 121, 0.95),
-        0 0 32px rgba(255, 159, 67, 0.75),
-        0 0 50px rgba(247, 140, 108, 0.5),
-        0 3px 8px rgba(0, 0, 0, 0.95);
-      animation: wordPop 0.22s cubic-bezier(0.18, 0.89, 0.32, 1.25) both;
+        0 2px 8px rgba(0, 0, 0, 0.95),
+        0 0 14px rgba(185, 175, 155, 0.28);
+      animation: wordSadFade 0.3s ease-out both;
     }
 
-    @keyframes wordPop {
+    @keyframes wordSadFade {
       0% {
         opacity: 0;
-        transform: translateY(8px) scale(0.85);
+        transform: translateY(6px);
+        filter: blur(2px);
       }
       100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
+        opacity: 0.92;
+        transform: translateY(0);
+        filter: blur(0px);
       }
     }
 
@@ -128,7 +130,7 @@
     }
 
     /* ==========================================================
-       4. START OVERLAY (IPAD COMPLIANT)
+       4. START OVERLAY
        ========================================================== */
     #start-screen {
       position: fixed !important;
@@ -194,7 +196,7 @@
   <canvas id="art-canvas"></canvas>
   <div id="film-grain"></div>
 
-  <!-- Golden Center Lyrics Stage -->
+  <!-- Bottom Lyrics Stage (Positioned below the window where there's NO rain) -->
   <div id="lyric-container">
     <div class="lyric-box" id="lyric-box"></div>
   </div>
@@ -314,7 +316,7 @@
       ctx.fillRect(0, 0, winL, height);
       ctx.fillRect(winR, 0, width - winR, height);
       ctx.fillRect(0, 0, width, winTop);
-      ctx.fillRect(0, winBottom, width, height - winBottom);
+      ctx.fillRect(0, winBottom, width, height - winBottom); // Dark lower area where lyrics run!
 
       // Wooden Sill
       ctx.fillStyle = '#111824';
@@ -408,123 +410,52 @@
     drawScene();
 
     // ==============================================================
-    // 2. REAL-TIME WORD-BY-WORD KHMER TIMELINE (EXACT AUDIO CADENCE)
+    // 2. REAL-TIME WORD-BY-WORD KHMER TIMELINE
     // ==============================================================
     const PHRASES = [
-      // 1. អាចទេ... បើខ្ញុំឈប់យំ
       { id: 1, start: 0.1, end: 3.6, words: [
-        { t: 0.1, w: "អាចទេ" },
-        { t: 1.2, w: "បើ" },
-        { t: 1.5, w: "ខ្ញុំ" },
-        { t: 2.0, w: "ឈប់" },
-        { t: 2.5, w: "យំ" }
+        { t: 0.1, w: "អាចទេ" }, { t: 1.2, w: "បើ" }, { t: 1.5, w: "ខ្ញុំ" }, { t: 2.0, w: "ឈប់" }, { t: 2.5, w: "យំ" }
       ]},
-      // 2. បើមេឃឈប់ភ្លៀង តើខ្ញុំឈប់យំមែនទេ?
       { id: 2, start: 3.8, end: 7.5, words: [
-        { t: 3.8, w: "បើ" },
-        { t: 4.1, w: "មេឃ" },
-        { t: 4.5, w: "ឈប់" },
-        { t: 4.8, w: "ភ្លៀង" },
-        { t: 5.4, w: "តើ" },
-        { t: 5.7, w: "ខ្ញុំ" },
-        { t: 6.1, w: "ឈប់" },
-        { t: 6.4, w: "យំ" },
-        { t: 6.8, w: "មែនទេ?" }
+        { t: 3.8, w: "បើ" }, { t: 4.1, w: "មេឃ" }, { t: 4.5, w: "ឈប់" }, { t: 4.8, w: "ភ្លៀង" },
+        { t: 5.4, w: "តើ" }, { t: 5.7, w: "ខ្ញុំ" }, { t: 6.1, w: "ឈប់" }, { t: 6.4, w: "យំ" }, { t: 6.8, w: "មែនទេ?" }
       ]},
-      // 3. ឈប់ស្នេហ៍មាសមេ
       { id: 3, start: 7.8, end: 10.0, words: [
-        { t: 7.8, w: "ឈប់" },
-        { t: 8.2, w: "ស្នេហ៍" },
-        { t: 8.6, w: "មាស" },
-        { t: 9.0, w: "មេ" }
+        { t: 7.8, w: "ឈប់" }, { t: 8.2, w: "ស្នេហ៍" }, { t: 8.6, w: "មាស" }, { t: 9.0, w: "មេ" }
       ]},
-      // 4. ឈប់ខ្វល់ និងឈប់ពាក់ព័ន្ធជិតឆ្ងាយ
       { id: 4, start: 10.2, end: 12.8, words: [
-        { t: 10.2, w: "ឈប់" },
-        { t: 10.6, w: "ខ្វល់" },
-        { t: 11.1, w: "និង" },
-        { t: 11.4, w: "ឈប់" },
-        { t: 11.7, w: "ពាក់ព័ន្ធ" },
-        { t: 12.1, w: "ជិត" },
-        { t: 12.5, w: "ឆ្ងាយ" }
+        { t: 10.2, w: "ឈប់" }, { t: 10.6, w: "ខ្វល់" }, { t: 11.1, w: "និង" }, { t: 11.4, w: "ឈប់" },
+        { t: 11.7, w: "ពាក់ព័ន្ធ" }, { t: 12.1, w: "ជិត" }, { t: 12.5, w: "ឆ្ងាយ" }
       ]},
-      // 5. ដើរចេញក៏មិនបាច់ប្រាប់ហេតុផល
       { id: 5, start: 13.0, end: 15.4, words: [
-        { t: 13.0, w: "ដើរចេញ" },
-        { t: 13.5, w: "ក៏" },
-        { t: 13.8, w: "មិនបាច់" },
-        { t: 14.3, w: "ប្រាប់" },
-        { t: 14.8, w: "ហេតុផល" }
+        { t: 13.0, w: "ដើរចេញ" }, { t: 13.5, w: "ក៏" }, { t: 13.8, w: "មិនបាច់" }, { t: 14.3, w: "ប្រាប់" }, { t: 14.8, w: "ហេតុផល" }
       ]},
-      // 6. ហើយអូនក៏មិនបាច់ត្រូវស្តាប់ហេតុផល
       { id: 6, start: 15.6, end: 18.0, words: [
-        { t: 15.6, w: "ហើយ" },
-        { t: 15.9, w: "អូន" },
-        { t: 16.2, w: "ក៏" },
-        { t: 16.5, w: "មិនបាច់" },
-        { t: 17.0, w: "ត្រូវ" },
-        { t: 17.3, w: "ស្តាប់" },
-        { t: 17.7, w: "ហេតុផល" }
+        { t: 15.6, w: "ហើយ" }, { t: 15.9, w: "អូន" }, { t: 16.2, w: "ក៏" }, { t: 16.5, w: "មិនបាច់" },
+        { t: 17.0, w: "ត្រូវ" }, { t: 17.3, w: "ស្តាប់" }, { t: 17.7, w: "ហេតុផល" }
       ]},
-      // 7. បងស្រក់ទឹកភ្នែក...
       { id: 7, start: 18.2, end: 20.6, words: [
-        { t: 18.2, w: "បង" },
-        { t: 18.6, w: "ស្រក់" },
-        { t: 19.1, w: "ទឹកភ្នែក..." }
+        { t: 18.2, w: "បង" }, { t: 18.6, w: "ស្រក់" }, { t: 19.1, w: "ទឹកភ្នែក..." }
       ]},
-      // 8. បើមេឃឈប់ភ្លៀង តើខ្ញុំឈប់យំមែនទេ?
       { id: 8, start: 20.8, end: 24.6, words: [
-        { t: 20.8, w: "បើ" },
-        { t: 21.1, w: "មេឃ" },
-        { t: 21.5, w: "ឈប់" },
-        { t: 21.8, w: "ភ្លៀង" },
-        { t: 22.4, w: "តើ" },
-        { t: 22.7, w: "ខ្ញុំ" },
-        { t: 23.1, w: "ឈប់" },
-        { t: 23.4, w: "យំ" },
-        { t: 23.8, w: "មែនទេ?" }
+        { t: 20.8, w: "បើ" }, { t: 21.1, w: "មេឃ" }, { t: 21.5, w: "ឈប់" }, { t: 21.8, w: "ភ្លៀង" },
+        { t: 22.4, w: "តើ" }, { t: 22.7, w: "ខ្ញុំ" }, { t: 23.1, w: "ឈប់" }, { t: 23.4, w: "យំ" }, { t: 23.8, w: "មែនទេ?" }
       ]},
-      // 9. ស្មោះស្ម័គ្រស្នេហ៍គេ
       { id: 9, start: 24.8, end: 26.6, words: [
-        { t: 24.8, w: "ស្មោះ" },
-        { t: 25.2, w: "ស្ម័គ្រ" },
-        { t: 25.6, w: "ស្នេហ៍" },
-        { t: 26.1, w: "គេ" }
+        { t: 24.8, w: "ស្មោះ" }, { t: 25.2, w: "ស្ម័គ្រ" }, { t: 25.6, w: "ស្នេហ៍" }, { t: 26.1, w: "គេ" }
       ]},
-      // 10. ស្រមៃមើលគេទាក់ទងម្តង ២-៣
       { id: 10, start: 26.8, end: 30.4, words: [
-        { t: 26.8, w: "ស្រមៃ" },
-        { t: 27.3, w: "មើល" },
-        { t: 27.7, w: "គេ" },
-        { t: 28.2, w: "ទាក់ទង" },
-        { t: 28.8, w: "ម្តង" },
-        { t: 29.3, w: "២-៣" }
+        { t: 26.8, w: "ស្រមៃ" }, { t: 27.3, w: "មើល" }, { t: 27.7, w: "គេ" }, { t: 28.2, w: "ទាក់ទង" }, { t: 28.8, w: "ម្តង" }, { t: 29.3, w: "២-៣" }
       ]},
-      // 11. សម្លាប់ក្តីសង្ឃឹមជាសន្សឹមៗ
       { id: 11, start: 30.6, end: 33.0, words: [
-        { t: 30.6, w: "សម្លាប់" },
-        { t: 31.1, w: "ក្តី" },
-        { t: 31.5, w: "សង្ឃឹម" },
-        { t: 32.1, w: "ជា" },
-        { t: 32.6, w: "សន្សឹមៗ" }
+        { t: 30.6, w: "សម្លាប់" }, { t: 31.1, w: "ក្តី" }, { t: 31.5, w: "សង្ឃឹម" }, { t: 32.1, w: "ជា" }, { t: 32.6, w: "សន្សឹមៗ" }
       ]},
-      // 12. ចង់ស្រឡាញ់អ្នកថ្មី
       { id: 12, start: 33.2, end: 35.6, words: [
-        { t: 33.2, w: "ចង់" },
-        { t: 33.7, w: "ស្រឡាញ់" },
-        { t: 34.2, w: "អ្នក" },
-        { t: 34.7, w: "ថ្មី" }
+        { t: 33.2, w: "ចង់" }, { t: 33.7, w: "ស្រឡាញ់" }, { t: 34.2, w: "អ្នក" }, { t: 34.7, w: "ថ្មី" }
       ]},
-      // 13. បើឈប់ភ្លៀង បងចង់ឈប់ស្នេហ៍ស្រី...
       { id: 13, start: 35.8, end: 39.4, words: [
-        { t: 35.8, w: "បើ" },
-        { t: 36.2, w: "ឈប់" },
-        { t: 36.6, w: "ភ្លៀង" },
-        { t: 37.1, w: "បង" },
-        { t: 37.5, w: "ចង់" },
-        { t: 37.9, w: "ឈប់" },
-        { t: 38.3, w: "ស្នេហ៍" },
-        { t: 38.7, w: "ស្រី..." }
+        { t: 35.8, w: "បើ" }, { t: 36.2, w: "ឈប់" }, { t: 36.6, w: "ភ្លៀង" }, { t: 37.1, w: "បង" },
+        { t: 37.5, w: "ចង់" }, { t: 37.9, w: "ឈប់" }, { t: 38.3, w: "ស្នេហ៍" }, { t: 38.7, w: "ស្រី..." }
       ]}
     ];
 
@@ -547,7 +478,6 @@
 
       setInterval(spawnAmberEmber, 320);
 
-      // Real-time Audio-Synced Clock (Runs every 25ms for zero-latency word pop)
       const clockStart = performance.now();
 
       syncTimer = setInterval(() => {
@@ -560,7 +490,6 @@
 
         handleWordByWordSync(curTime);
 
-        // Loop after 39.5 seconds
         if (curTime >= 39.5) {
           currentPhraseId = null;
           renderedWords.clear();
@@ -572,18 +501,14 @@
 
     function handleWordByWordSync(currentTime) {
       const box = document.getElementById('lyric-box');
-      
-      // Find which phrase is active right now
       const activePhrase = PHRASES.find(p => currentTime >= p.start && currentTime <= p.end);
 
       if (activePhrase) {
-        // If this is a new phrase, clear previous words
         if (currentPhraseId !== activePhrase.id) {
           currentPhraseId = activePhrase.id;
           box.innerHTML = '';
         }
 
-        // Check each word in this phrase
         activePhrase.words.forEach((wordObj, idx) => {
           const wordKey = `${activePhrase.id}_${idx}`;
           if (currentTime >= wordObj.t && !renderedWords.has(wordKey)) {
@@ -596,7 +521,6 @@
           }
         });
       } else {
-        // Clear box during pauses between phrases
         if (currentPhraseId !== null) {
           currentPhraseId = null;
           box.innerHTML = '';
